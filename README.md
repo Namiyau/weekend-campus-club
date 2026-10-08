@@ -4,6 +4,10 @@
 
 公开源码备份：https://github.com/Namiyau/weekend-campus-club
 
+GitHub Pages 公开网站：https://namiyau.github.io/weekend-campus-club/
+
+提交 `site/` 下的网页更新到 `main` 后，GitHub Actions 自动部署 GitHub Pages。
+
 ## 部署
 
 Cloudflare Pages 项目：`weekend-campus-club`
