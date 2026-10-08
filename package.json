@@ -1,0 +1,12 @@
+{
+  "name": "weekend-campus-club",
+  "version": "1.0.0",
+  "private": true,
+  "description": "大学生周末兼职撮合主题展示站",
+  "scripts": {
+    "test": "node check.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.0"
+  }
+}

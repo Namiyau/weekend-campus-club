@@ -1,0 +1,7 @@
+.wrangler/
+node_modules/
+.env
+.env.*
+!.env.example
+desktop.png
+mobile.png

@@ -1,0 +1,25 @@
+const { chromium } = require('playwright');
+const assert = require('node:assert/strict');
+const { pathToFileURL } = require('node:url');
+const path = require('node:path');
+(async()=>{
+ const browser=await chromium.launch({headless:true});
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});
+ const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ const response=await page.goto(process.argv[2]||pathToFileURL(path.join(__dirname,'site','index.html')).href);
+ if(response)assert(response.ok(),`HTTP ${response.status()}`);
+ await page.waitForSelector('.job-card');assert.equal(await page.locator('.job-card').count(),6);
+ await page.getByRole('button',{name:'餐饮服务',exact:true}).click();assert.equal(await page.locator('.job-card').count(),2);
+ await page.getByRole('button',{name:'全部机会',exact:true}).click();
+ await page.getByRole('searchbox').fill('书店');assert.equal(await page.locator('.job-card').count(),1);
+ await page.locator('.detail-button').click();assert(await page.locator('dialog').isVisible());assert.match(await page.locator('#detail-content').innerText(),/书店整理与收银/);
+ await page.keyboard.press('Escape');assert(!(await page.locator('dialog').isVisible()));
+ await page.getByRole('searchbox').fill('不存在的岗位');assert(await page.locator('#empty').isVisible());
+ await page.getByRole('searchbox').fill('');await page.screenshot({path:'desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:'mobile.png',fullPage:true});
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Mobile horizontal overflow');
+ await page.locator('.detail-button').first().click();assert(await page.locator('dialog').isVisible());
+ await page.getByRole('button',{name:'我知道了',exact:true}).click();assert(!(await page.locator('dialog').isVisible()));
+ assert.deepEqual(errors,[]);console.log('PASS: 6 jobs, filters, search, empty state, detail dialog, keyboard close, mobile layout, no JS errors.');
+ await browser.close();
+})().catch(error=>{console.error(error);process.exit(1)});
