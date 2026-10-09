@@ -7,7 +7,10 @@ const url = process.argv[2] || pathToFileURL(path.join(__dirname, 'site', 'index
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const page = await browser.newPage({
+    viewport: { width: 1440, height: 1000 },
+    timezoneId: 'Asia/Shanghai'
+  });
   page.setDefaultTimeout(2500);
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -114,19 +117,25 @@ const url = process.argv[2] || pathToFileURL(path.join(__dirname, 'site', 'index
     await page.getByLabel('商家名称').fill('大学城展览空间');
     await page.getByLabel('岗位名称').fill('周末展览签到协助');
     await page.getByLabel('工作内容').fill('协助来访者签到与现场指引。');
-    const nextWeekendDate = await page.evaluate(() => {
-      const date = new Date();
-      const days = (6 - date.getDay() + 7) % 7 || (date.getDay() === 6 ? 0 : 7);
-      date.setDate(date.getDate() + days);
-      return date.toISOString().slice(0, 10);
+    const postDates = await page.evaluate(() => {
+      const formatLocalDate = date => [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, '0'),
+        String(date.getDate()).padStart(2, '0')
+      ].join('-');
+      const nextWeekday = target => {
+        const date = new Date();
+        const days = (target - date.getDay() + 7) % 7 || 7;
+        date.setDate(date.getDate() + days);
+        return formatLocalDate(date);
+      };
+      return {
+        saturday: nextWeekday(6),
+        sunday: nextWeekday(0),
+        monday: nextWeekday(1)
+      };
     });
-    const nextWeekdayDate = await page.evaluate(() => {
-      const date = new Date();
-      const days = (8 - date.getDay() + 7) % 7 || 7;
-      date.setDate(date.getDate() + days);
-      return date.toISOString().slice(0, 10);
-    });
-    await page.getByRole('textbox', { name: '工作日期' }).fill(nextWeekdayDate);
+    await page.getByRole('textbox', { name: '工作日期' }).fill(postDates.monday);
     await page.getByLabel('开始时间').fill('10:00');
     await page.getByLabel('结束时间').fill('16:00');
     await page.getByLabel('薪资金额').fill('150');
@@ -138,8 +147,11 @@ const url = process.argv[2] || pathToFileURL(path.join(__dirname, 'site', 'index
     await page.getByRole('button', { name: '发布岗位', exact: true }).click();
     assert(await page.locator('#post-job-dialog').isVisible(), 'the merchant can correct the invalid date');
     assert.equal(await page.locator('.merchant-job-card').count(), 6, 'weekday jobs are not published');
-    await page.getByRole('textbox', { name: '工作日期' }).fill(nextWeekendDate);
-    assert.equal(await page.locator('#post-date').evaluate(input => input.checkValidity()), true, 'Saturday and Sunday dates are valid');
+    await page.getByRole('textbox', { name: '工作日期' }).fill(postDates.saturday);
+    assert.equal(await page.locator('#post-date').evaluate(input => input.checkValidity()), true, 'Saturday dates are valid');
+    await page.getByRole('textbox', { name: '工作日期' }).fill(postDates.sunday);
+    assert.equal(await page.locator('#post-date').evaluate(input => input.checkValidity()), true, 'Sunday dates are valid');
+    await page.getByRole('textbox', { name: '工作日期' }).fill(postDates.saturday);
     await page.getByRole('button', { name: '发布岗位', exact: true }).click();
     assert(await page.locator('#toast').isVisible());
     assert.match(await page.locator('#toast').innerText(), /岗位已发布/);
