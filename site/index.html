@@ -1,19 +1,179 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="大学生周末兼职撮合：发现校园周边的周末岗位，让空闲时间更有价值。">
-  <meta name="theme-color" content="#254cde"><title>周末搭子 · 大学生周末兼职撮合</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="周末搭子 Demo：连接大学生与校园周边商家，体验从发现周末兼职到报名、录用的完整撮合流程。">
+  <meta name="theme-color" content="#254cde">
+  <title>周末搭子 · 大学生周末兼职撮合</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header"><a class="brand" href="#"><span class="brand-icon">周</span>周末搭子<span class="brand-sub">WEEKEND CLUB</span></a><nav aria-label="主导航"><a href="#jobs">找兼职</a><a href="#guide">如何参与</a><a class="nav-cta" href="#jobs">探索周末机会 ↗</a></nav></header>
-  <main>
-    <section class="hero"><div class="hero-copy"><p class="eyebrow"><span class="dot"></span> 校园周边 · 周末限定</p><h1>把周末空闲，<br>变成<span class="blue">生活小底气。</span></h1><p class="intro">课表之外，还有另一种成长。<br>发现身边的短期兼职，赚点生活费，也多一点新体验。</p><a class="button" href="#jobs">看看有哪些兼职 <span>↗</span></a><div class="hero-note"><span>大学生周末兼职撮合</span><span>示例展示网站</span></div></div><div class="poster" aria-label="周末兼职主题插画"><div class="poster-top">YOUR WEEKEND<br>YOUR POSSIBILITIES <span>↗</span></div><div class="ticket"><div class="ticket-label">WEEKEND PASS <span>周末通行证</span></div><div class="ticket-title">周六 + 周日<br><strong>都有可能。</strong></div><div class="ticket-bottom"><span>学习 / 体验 / 赚点零花</span><span>✦</span></div></div><div class="poster-footer"><span>下一站，新的体验</span><span>02 DAYS / MORE WAYS</span></div><div class="sticker">周末<br>不设限</div></div></section>
-    <div class="strip"><span>离校园近一点</span><b>✦</b><span>时间安排灵活一点</span><b>✦</b><span>岗位信息清楚一点</span><b>✦</b><span>周末生活丰富一点</span></div>
-    <section class="jobs-section" id="jobs"><div class="section-heading"><div><p class="eyebrow">FIND YOUR FIT</p><h2>找个适合你的周末。</h2></div><p>以下为示例岗位，不代表真实招聘</p></div><div class="toolbar"><div class="filters" role="group" aria-label="岗位类别"><button class="active" data-filter="全部" aria-pressed="true">全部机会</button><button data-filter="餐饮" aria-pressed="false">餐饮服务</button><button data-filter="零售" aria-pressed="false">门店零售</button><button data-filter="活动" aria-pressed="false">活动协助</button></div><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索岗位或商家" aria-label="搜索岗位或商家"></label></div><p class="result-count" id="result-count" aria-live="polite"></p><div class="job-grid" id="job-grid"></div><p id="empty" hidden>没有符合条件的岗位。换个关键词，或选择“全部机会”。</p></section>
-    <section class="guide" id="guide"><div><p class="eyebrow">A LITTLE GUIDE</p><h2>你的周末，你来安排。</h2><p>让短期用工信息更集中，让学生和周边商家更容易找到彼此。</p></div><ol><li><span>01</span><div><h3>发现身边机会</h3><p>按岗位类型和关键词，找到感兴趣的工作。</p></div></li><li><span>02</span><div><h3>看清时间与报酬</h3><p>确认工作内容、地点和结算方式，再安排时间。</p></div></li><li><span>03</span><div><h3>沟通后再出发</h3><p>真实求职时请核实商家，不缴纳押金或入职费用。</p></div></li></ol></section>
-  </main><footer><a class="brand" href="#"><span class="brand-icon">周</span>周末搭子</a><p>大学生周末兼职撮合 · 让周末多一种可能</p><span>概念展示 · 所有岗位均为示例</span></footer>
-  <dialog id="details"><div class="dialog-header"><span class="eyebrow">岗位详情 · 示例</span><button id="close-dialog" aria-label="关闭详情">×</button></div><div id="detail-content"></div><p class="demo-notice">本网站为主题展示。岗位为虚构示例，暂不提供报名或实际撮合服务。</p><button class="button" id="understood">我知道了</button></dialog>
+  <header class="header">
+    <a class="brand" href="#top" aria-label="周末搭子首页">
+      <span class="brand-icon">周</span>周末搭子<span class="brand-sub">WEEKEND CLUB</span>
+    </a>
+    <nav aria-label="主导航">
+      <div class="nav-links"><a href="#jobs">找兼职</a><a href="#guide">如何参与</a></div>
+      <div class="role-toggle" role="group" aria-label="切换演示端">
+        <button id="role-student" class="active" type="button" aria-pressed="true">学生端</button>
+        <button id="role-merchant" type="button" aria-pressed="false">商家端</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="demo-banner">
+      <span><strong>DEMO 体验模式</strong>　商家、岗位、报名和录用均为虚构示例</span>
+      <button id="reset-demo" class="text-button" type="button">重置演示数据</button>
+    </div>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span>校园周边 · 周末限定</p>
+        <h1 id="hero-title">把周末空闲，<br>变成<span class="blue">生活小底气。</span></h1>
+        <p class="intro">课表之外，还有另一种成长。<br>找到合适的时间、地点和报酬，报名后等商家确认。</p>
+        <a class="button" href="#jobs">看看有哪些兼职 <span aria-hidden="true">↗</span></a>
+        <div class="hero-note"><span>大学生周末兼职撮合</span><span>所有信息均为 Demo</span></div>
+      </div>
+      <div class="poster" aria-label="周末兼职主题插画">
+        <div class="poster-top">YOUR WEEKEND<br>YOUR POSSIBILITIES <span aria-hidden="true">↗</span></div>
+        <div class="ticket">
+          <div class="ticket-label">WEEKEND PASS <span>周末通行证</span></div>
+          <div class="ticket-title">周六 + 周日<br><strong>都有可能。</strong></div>
+          <div class="ticket-bottom"><span>学习 / 体验 / 赚点零花</span><span aria-hidden="true">✦</span></div>
+        </div>
+        <div class="poster-footer"><span>下一站，新的体验</span><span>02 DAYS / MORE WAYS</span></div>
+        <div class="sticker">周末<br>不设限</div>
+      </div>
+    </section>
+
+    <div class="strip" aria-label="平台特点"><span>离校园近一点</span><b aria-hidden="true">✦</b><span>时间安排灵活一点</span><b aria-hidden="true">✦</b><span>岗位信息清楚一点</span><b aria-hidden="true">✦</b><span>周末生活丰富一点</span></div>
+
+    <section class="jobs-section" id="jobs" aria-live="off">
+      <div id="student-panel">
+        <div class="section-heading">
+          <div><p class="eyebrow">FIND YOUR FIT</p><h2>找个适合你的周末。</h2></div>
+          <p>按日期、时薪和类型筛选，合适就报名</p>
+        </div>
+        <div class="student-toolbar">
+          <div class="student-tabs" role="tablist" aria-label="学生功能">
+            <button id="tab-jobs" class="active" type="button" role="tab" aria-selected="true" data-student-view="jobs">找兼职</button>
+            <button id="tab-applications" type="button" role="tab" aria-selected="false" data-student-view="applications">我的报名</button>
+          </div>
+          <div class="student-profile">当前演示学生：<strong id="current-student">林同学</strong><button id="switch-student" class="text-button" type="button">切换昵称</button></div>
+        </div>
+
+        <div id="jobs-pane" role="tabpanel" aria-labelledby="tab-jobs">
+          <div class="toolbar">
+            <div class="filters" role="group" aria-label="岗位类别">
+              <button class="active" type="button" data-filter="全部" aria-pressed="true">全部机会</button>
+              <button type="button" data-filter="餐饮" aria-pressed="false">餐饮服务</button>
+              <button type="button" data-filter="零售" aria-pressed="false">门店零售</button>
+              <button type="button" data-filter="活动" aria-pressed="false">活动协助</button>
+            </div>
+            <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索岗位或商家" aria-label="搜索岗位或商家"></label>
+          </div>
+          <div class="extra-filters">
+            <div class="day-filters" role="group" aria-label="工作日期">
+              <span>工作日</span>
+              <button class="active" type="button" data-day-filter="all" aria-pressed="true">不限</button>
+              <button type="button" data-day-filter="saturday" aria-pressed="false">周六</button>
+              <button type="button" data-day-filter="sunday" aria-pressed="false">周日</button>
+            </div>
+            <label class="select-filter">薪资筛选
+              <select id="pay-filter" aria-label="薪资筛选">
+                <option value="all">不限</option>
+                <option value="hourly-20">时薪 ≥ 20 元</option>
+                <option value="daily-150">日薪 ≥ 150 元</option>
+              </select>
+            </label>
+          </div>
+          <p class="result-count" id="result-count" aria-live="polite"></p>
+          <div class="job-grid" id="job-grid"></div>
+          <div id="empty" class="empty-state" hidden><span class="empty-icon" aria-hidden="true">⌕</span><h3>还没有找到合适的岗位</h3><p>换个关键词、日期或薪资条件试试。</p><button id="clear-filters" class="secondary-button" type="button">清除筛选</button></div>
+        </div>
+
+        <div id="applications-pane" role="tabpanel" aria-labelledby="tab-applications" hidden>
+          <div class="subsection-heading"><div><h3>我的报名</h3><p>看看商家是否确认了你的周末安排。</p></div></div>
+          <div id="student-applications" class="application-list"></div>
+        </div>
+      </div>
+
+      <div id="merchant-panel" hidden>
+        <div class="section-heading">
+          <div><p class="eyebrow">MERCHANT DESK · DEMO</p><h2>把周末班次，交给合适的人。</h2></div>
+          <button id="post-job-open" class="button" type="button">＋ 发布岗位</button>
+        </div>
+        <p class="merchant-intro">示例商家工作台 · 发布岗位、查看报名并确认录用。录用名额按岗位人数限制。</p>
+        <div id="merchant-jobs" class="merchant-jobs"></div>
+        <div id="merchant-empty" class="empty-state" hidden><span class="empty-icon" aria-hidden="true">＋</span><h3>还没有发布岗位</h3><p>发布一个周末班次，让附近同学看见。</p><button class="secondary-button" type="button" data-open-post-job>发布第一个岗位</button></div>
+      </div>
+    </section>
+
+    <section class="guide" id="guide">
+      <div><p class="eyebrow">A LITTLE GUIDE</p><h2>清楚安排，再出发。</h2><p>先看日期、地点、薪酬和结算方式；提交报名后，等商家确认录用。</p><p class="guide-note">Demo 中的岗位和商家都是虚构示例，不代表真实招聘、认证或用工承诺。</p></div>
+      <ol>
+        <li><span>01</span><div><h3>找到合适的班次</h3><p>按周六、周日、岗位类型和薪酬筛选。</p></div></li>
+        <li><span>02</span><div><h3>提交报名信息</h3><p>填写演示昵称和可工作时间，不重复提交。</p></div></li>
+        <li><span>03</span><div><h3>商家确认录用</h3><p>在「我的报名」查看待确认、已录用或未录用状态。</p></div></li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand" href="#top"><span class="brand-icon">周</span>周末搭子</a>
+    <p>大学生周末兼职撮合 · 让周末多一种可能</p>
+    <span>概念 Demo · 所有岗位和商家均为虚构示例</span>
+  </footer>
+
+  <dialog id="details" aria-labelledby="detail-title">
+    <div class="dialog-header"><span class="eyebrow">岗位详情 · DEMO</span><button class="icon-button" type="button" data-close-dialog aria-label="关闭详情">×</button></div>
+    <div id="detail-content"></div>
+    <div class="dialog-actions"><button class="secondary-button" type="button" data-close-dialog>返回岗位</button><button class="button" id="apply-from-detail" type="button">立即报名 <span aria-hidden="true">↗</span></button></div>
+    <p class="demo-notice">岗位为虚构演示内容，不代表实际招聘或商家认证。</p>
+  </dialog>
+
+  <dialog id="application-dialog" aria-labelledby="application-title">
+    <div class="dialog-header"><div><span class="eyebrow">报名申请 · DEMO</span><h2 id="application-title">填好时间，提交报名。</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="关闭报名表">×</button></div>
+    <p id="application-job-summary" class="form-summary"></p>
+    <form id="apply-form">
+      <label>学生昵称<input id="student-name" name="studentName" type="text" maxlength="20" autocomplete="name" required></label>
+      <label>可工作时间<select id="availability" name="availability" required></select></label>
+      <p class="form-hint">提交后商家会在演示工作台确认；同一昵称不能重复报名。</p>
+      <div class="dialog-actions"><button class="secondary-button" type="button" data-close-dialog>稍后再说</button><button class="button" type="submit">确认报名</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="profile-dialog" aria-labelledby="profile-title">
+    <div class="dialog-header"><div><span class="eyebrow">学生演示身份</span><h2 id="profile-title">切换体验同学</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="关闭身份设置">×</button></div>
+    <form id="profile-form">
+      <label>演示学生昵称<input id="profile-name" type="text" maxlength="20" required></label>
+      <p class="form-hint">用不同昵称可模拟不同同学。已有报名记录会保留在各自昵称下。</p>
+      <div class="dialog-actions"><button class="secondary-button" type="button" data-close-dialog>取消</button><button class="button" type="submit">切换身份</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="post-job-dialog" aria-labelledby="post-job-title">
+    <div class="dialog-header"><div><span class="eyebrow">商家端 · DEMO</span><h2 id="post-job-title">发布一个周末班次。</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="关闭发布表单">×</button></div>
+    <form id="post-job-form" class="post-job-form">
+      <label>商家名称<input id="post-merchant" type="text" maxlength="30" placeholder="例如：转角咖啡" required></label>
+      <label>岗位名称<input id="post-title" type="text" maxlength="40" placeholder="例如：周末店员" required></label>
+      <label class="full-field">工作内容<textarea id="post-description" rows="3" maxlength="300" placeholder="说说到岗后主要做什么" required></textarea></label>
+      <label>工作日期<input id="post-date" type="date" required></label>
+      <div class="time-fields"><label>开始时间<input id="post-start" type="time" value="09:00" required></label><label>结束时间<input id="post-end" type="time" value="17:00" required></label></div>
+      <div class="pay-fields"><label>薪资金额<input id="post-pay" type="number" min="1" step="1" placeholder="22" required></label><label>薪资单位<select id="post-unit" required><option value="小时">元/小时</option><option value="天">元/天</option></select></label></div>
+      <label>工作地点<input id="post-location" type="text" maxlength="60" placeholder="大学城 · 校园东门附近" required></label>
+      <label>招募人数<input id="post-headcount" type="number" min="1" max="99" step="1" value="2" required></label>
+      <label>岗位类别<select id="post-category" required><option value="餐饮">餐饮服务</option><option value="零售">门店零售</option><option value="活动">活动协助</option></select></label>
+      <label class="full-field">结算方式<input id="post-settlement" type="text" maxlength="80" placeholder="按实际工时结算（示例）" required></label>
+      <p class="form-hint full-field">该岗位将标注为 Demo 示例，仅保存在当前浏览器。</p>
+      <div class="dialog-actions full-field"><button class="secondary-button" type="button" data-close-dialog>取消</button><button class="button" type="submit">发布岗位</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <script src="app.js" defer></script>
-</body></html>
+</body>
+</html>

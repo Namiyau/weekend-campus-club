@@ -1,37 +1,85 @@
 # 周末搭子
 
-大学生周末兼职撮合主题展示站。岗位为虚构示例，支持类别筛选、搜索和详情查看，无报名或真实撮合服务。
+「周末搭子」是一个面向大学生与校园周边商家的**周末兼职撮合 Demo**。它保留轻松的蓝白品牌视觉，并演示从浏览岗位、提交报名到商家录用、学生查看结果的完整流程。
 
-公开源码备份：https://github.com/Namiyau/weekend-campus-club
+> **演示声明：**商家、岗位、申请和录用信息全部为虚构示例，不代表真实招聘或商家认证。本项目不提供真实账户、聊天、支付或用工服务。
 
-GitHub Pages 公开网站：https://namiyau.github.io/weekend-campus-club/
+## 产品功能
 
-提交 `site/` 下的网页更新到 `main` 后，GitHub Actions 自动部署 GitHub Pages。
+### 学生端
 
-## 部署
+- 按餐饮、零售、活动分类，并搜索岗位名称、商家和地点。
+- 按周六 / 周日及薪资单位筛选岗位。
+- 卡片和详情展示动态周末日期、班次、地点、薪资单位、结算方式、要求和招募人数。
+- 通过昵称和可工作日期提交报名；同一演示昵称不能重复申请同一岗位。
+- 在「我的报名」查看待商家确认、已录用、未录用状态。
+- 切换演示学生昵称，方便在一个浏览器中体验多位申请者和岗位名额。
 
-Cloudflare Pages 项目：`weekend-campus-club`
+### 商家端
+
+- 查看岗位及报名学生、可工作日期、处理状态和剩余录用名额。
+- 发布周末岗位，填写商家、岗位内容、日期与班次、薪资、地点、人数、类别和结算方式。
+- 对待确认的报名执行「录用」或「不录用」。达到招聘名额后，岗位显示「已招满」，后续录用操作会被阻止。
+
+### 演示数据
+
+- 初次打开会显示 6 个预设岗位，咖啡店岗位适合作为完整流程的演示入口。
+- 日期会根据打开页面时的日期计算到即将到来的周末，不依赖过期的固定日期。
+- 岗位、报名、录用和演示昵称保存在当前浏览器的 `localStorage`。页面刷新后会保留；点击页面顶部的「重置演示数据」可恢复初始岗位并清除报名。
+
+## 1～2 分钟评审演示路径
+
+1. 保持「学生端」，找到「咖啡店周末店员」，打开详情；确认日期、09:00–17:00 班次、¥22/小时、结算方式和招募人数。
+2. 点击「立即报名」，填写「林同学」及可工作日期，提交后打开「我的报名」，看到「待商家确认」。
+3. 切换到「商家端」，在转角咖啡的报名名单中找到林同学，点击「录用」。
+4. 切回「学生端」的「我的报名」，确认状态变成「已录用」；刷新页面后再查看，结果仍然保留。
+5. （可选）用「切换昵称」切到「陈同学」，报名并录用第二位同学，咖啡店岗位会显示「已招满」且不再接受报名。
+
+若要继续体验发布和拒绝：在商家端发布一个岗位，切回学生端报名；回商家端点击「不录用」，再到该演示昵称的「我的报名」查看结果。
+
+## 本地运行
+
+本项目无需构建步骤。可直接用浏览器打开 `site/index.html`，或在项目根目录运行一个静态文件服务器：
+
+```powershell
+python -m http.server 8000 --directory site
+```
+
+然后打开 <http://localhost:8000>。页面数据只写入本地浏览器。
+
+## 自动化验证
+
+需要 Node.js。安装依赖和 Playwright Chromium 后运行：
+
+```powershell
+npm ci
+npx playwright install chromium
+npm test
+```
+
+Playwright 检查覆盖岗位列表、分类与关键词搜索、周六 / 周日和薪资筛选、无结果状态、详情弹窗、重复报名保护、报名→录用→学生状态同步、拒绝状态、名额上限、商家发布、刷新持久化、Demo 重置、桌面与手机溢出、手机岗位卡片间距及 JavaScript 错误。运行后会在项目根目录生成 `desktop.png` 与 `mobile.png` 两张检查截图。
+
+## 技术方案与范围
+
+- 静态 HTML、CSS 和原生 JavaScript；没有框架、构建或服务端依赖。
+- `site/app.js` 集中处理 Demo 状态、筛选、岗位发布、报名与商家审核；持久化数据可通过重置操作恢复。
+- `site/style.css` 沿用蓝白主视觉，并为桌面和移动端提供独立布局。
+- 数据仅在当前浏览器内演示。真实业务还需要服务端账户、权限、商家核验和双端数据同步；本项目不会把 Demo 状态描述为真实招聘或认证结果。
+
+## 部署说明
+
+### GitHub Pages
+
+- 公开地址：<https://namiyau.github.io/weekend-campus-club/>
+- 推送 `main` 分支后，GitHub Actions 会自动将 `site/` 发布到 GitHub Pages。
+
+### Cloudflare Pages
+
+- 公开地址：<https://weekend-campus-club.pages.dev/>
+- 项目名：`weekend-campus-club`。该项目使用 Direct Upload，GitHub 推送不会自动触发 Cloudflare 部署；更新 `site/` 后需单独运行：
 
 ```powershell
 npx wrangler pages deploy site --project-name weekend-campus-club --branch main
 ```
 
-公开网址：https://weekend-campus-club.pages.dev/
-
-## 本地查看
-
-直接用浏览器打开 `site/index.html`。网页不需要构建。
-
-## 验证
-
-需要 Node.js，首次运行安装测试依赖和浏览器：
-
-```powershell
-npm install
-npx playwright install chromium
-npm test
-```
-
-检查公开站点：`npm test -- https://weekend-campus-club.pages.dev`
-
-测试覆盖岗位列表、筛选、搜索、无结果状态、详情弹窗、键盘关闭、手机布局和 JavaScript 错误。
+首次使用 Wrangler 时，先运行 `npx wrangler login` 完成授权。两个站点都是静态演示页面，报名数据保存在各自浏览器来源的 `localStorage` 中。
