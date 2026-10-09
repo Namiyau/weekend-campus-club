@@ -114,12 +114,19 @@ const url = process.argv[2] || pathToFileURL(path.join(__dirname, 'site', 'index
     await page.getByLabel('商家名称').fill('大学城展览空间');
     await page.getByLabel('岗位名称').fill('周末展览签到协助');
     await page.getByLabel('工作内容').fill('协助来访者签到与现场指引。');
-    await page.getByRole('textbox', { name: '工作日期' }).fill(await page.evaluate(() => {
+    const nextWeekendDate = await page.evaluate(() => {
       const date = new Date();
       const days = (6 - date.getDay() + 7) % 7 || (date.getDay() === 6 ? 0 : 7);
       date.setDate(date.getDate() + days);
       return date.toISOString().slice(0, 10);
-    }));
+    });
+    const nextWeekdayDate = await page.evaluate(() => {
+      const date = new Date();
+      const days = (8 - date.getDay() + 7) % 7 || 7;
+      date.setDate(date.getDate() + days);
+      return date.toISOString().slice(0, 10);
+    });
+    await page.getByRole('textbox', { name: '工作日期' }).fill(nextWeekdayDate);
     await page.getByLabel('开始时间').fill('10:00');
     await page.getByLabel('结束时间').fill('16:00');
     await page.getByLabel('薪资金额').fill('150');
@@ -127,8 +134,15 @@ const url = process.argv[2] || pathToFileURL(path.join(__dirname, 'site', 'index
     await page.getByLabel('工作地点').fill('大学城 · 艺术中心');
     await page.getByLabel('招募人数').fill('2');
     await page.getByLabel('结算方式').fill('活动结束后结算（示例）');
+    assert.equal(await page.locator('#post-date').evaluate(input => input.checkValidity()), false, 'weekday dates are invalid');
+    await page.getByRole('button', { name: '发布岗位', exact: true }).click();
+    assert(await page.locator('#post-job-dialog').isVisible(), 'the merchant can correct the invalid date');
+    assert.equal(await page.locator('.merchant-job-card').count(), 6, 'weekday jobs are not published');
+    await page.getByRole('textbox', { name: '工作日期' }).fill(nextWeekendDate);
+    assert.equal(await page.locator('#post-date').evaluate(input => input.checkValidity()), true, 'Saturday and Sunday dates are valid');
     await page.getByRole('button', { name: '发布岗位', exact: true }).click();
     assert(await page.locator('#toast').isVisible());
+    assert.match(await page.locator('#toast').innerText(), /岗位已发布/);
     await page.getByRole('button', { name: '学生端', exact: true }).click();
     await page.locator('[data-student-view="jobs"]').click();
     await page.getByRole('searchbox').fill('展览签到');
@@ -161,7 +175,7 @@ const url = process.argv[2] || pathToFileURL(path.join(__dirname, 'site', 'index
     assert.equal(await page.locator('.merchant-job-card').count(), 6, 'merchant workspace adapts to mobile');
     assert.deepEqual(errors, [], `no JavaScript errors: ${errors.join('; ')}`);
 
-    console.log('PASS: listing, category/search/weekend/pay filters, details, duplicate protection, apply→hire→status sync, reject, capacity, publish, reload persistence, reset, mobile layout, and no JS errors.');
+    console.log('PASS: listing, category/search/weekend/pay filters, details, duplicate protection, apply→hire→status sync, reject, capacity, weekend-date validation, publish, reload persistence, reset, mobile layout, and no JS errors.');
   } finally {
     await browser.close();
   }

@@ -405,17 +405,34 @@
     return upcomingWeekend().saturday;
   }
 
+  function isWeekendDate(date) {
+    if (!date) return false;
+    const weekday = new Date(`${date}T12:00:00`).getDay();
+    return weekday === 0 || weekday === 6;
+  }
+
+  function validatePostDate(input) {
+    input.setCustomValidity(input.value && !isWeekendDate(input.value) ? '工作日期需选择周六或周日。' : '');
+  }
+
   function openPostDialog() {
     const dateInput = document.querySelector('#post-date');
     dateInput.min = toISODate(new Date());
     dateInput.value = nearestSaturday();
+    dateInput.setCustomValidity('');
     elements.postDialog.showModal();
     document.querySelector('#post-merchant').focus();
   }
 
   function submitJob(event) {
     event.preventDefault();
-    const date = document.querySelector('#post-date').value;
+    const dateInput = document.querySelector('#post-date');
+    const date = dateInput.value;
+    if (!isWeekendDate(date)) {
+      showToast('工作日期需选择周六或周日。');
+      dateInput.focus();
+      return;
+    }
     const startTime = document.querySelector('#post-start').value;
     const endTime = document.querySelector('#post-end').value;
     if (startTime >= endTime) {
@@ -561,6 +578,7 @@
   });
   document.querySelector('#post-job-open').addEventListener('click', openPostDialog);
   document.querySelector('[data-open-post-job]').addEventListener('click', openPostDialog);
+  document.querySelector('#post-date').addEventListener('input', event => validatePostDate(event.currentTarget));
   elements.postForm.addEventListener('submit', submitJob);
 
   elements.roleStudent.addEventListener('click', () => setRole('student'));
